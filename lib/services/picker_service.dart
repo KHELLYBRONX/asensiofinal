@@ -8,6 +8,8 @@ class PickerService{
   late final ImagePicker _imagePicker;
   // late final ImagePicker _filePicker;
   
+
+  //Picker constructor
   PickerService._(){
     _imagePicker = ImagePicker();
   }
