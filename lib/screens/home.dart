@@ -69,40 +69,51 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       IconButton(
                           onPressed: () => _onChangeTab(0),
-                          icon: const Icon(Icons.map)),
+                          icon: Icon(
+                            Icons.map,
+                            color: _currentIndex == 0 ? Colors.blue : null,
+                          )),
                       IconButton(
                           onPressed: () => _onChangeTab(1),
-                          icon: const Icon(Icons.car_rental)),
+                          icon: Icon(
+                            Icons.car_rental,
+                            color: _currentIndex == 1 ? Colors.blue : null,
+                          )),
                       IconButton(
                           onPressed: () => _onChangeTab(2),
-                          icon: const Icon(Icons.settings)),
+                          icon: Icon(
+                            Icons.settings,
+                            color: _currentIndex == 2 ? Colors.blue : null,
+                          )),
                     ],
                   )),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: statusBar + 15, left: 10),
-            child: Container(
-              child: Builder(builder: (context) {
-                return IconButton(
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                    icon: const Icon(Icons.menu));
-              }),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        // blurStyle: BlurStyle.inner,
-                        offset: const Offset(2, 2),
-                        spreadRadius: 2)
-                  ]),
-            ),
-          )
+          _currentIndex != 0
+              ? const SizedBox()
+              : Padding(
+                  padding: EdgeInsets.only(top: statusBar + 15, left: 10),
+                  child: Container(
+                    child: Builder(builder: (context) {
+                      return IconButton(
+                          onPressed: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                          icon: const Icon(Icons.menu));
+                    }),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              // blurStyle: BlurStyle.inner,
+                              offset: const Offset(2, 2),
+                              spreadRadius: 2)
+                        ]),
+                  ),
+                )
         ],
       ),
       // bottomNavigationBar: BottomNavigationBar(

@@ -1,18 +1,32 @@
- import 'package:asensiofinal/screens/login.dart';
+import 'package:asensiofinal/provider/location_provider.dart';
+import 'package:asensiofinal/screens/login.dart';
+import 'package:asensiofinal/utils/get_location.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var location = await getLocation();
+  runApp(MyApp(
+    position: location,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({ Key? key }) : super(key: key);
+  final Position? position;
+  const MyApp({Key? key, required this.position}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<LocationProvider>(
+            create: (_) => LocationProvider(position)),
+      ],
+      child: MaterialApp(
         home: LoginPage(),
-      
+      ),
     );
   }
 }
