@@ -5,21 +5,16 @@ import 'package:flutter/material.dart';
 
 class Registration1 extends StatefulWidget {
   const Registration1({ Key? key }) : super(key: key);
-
   @override
   _Registration1State createState() => _Registration1State();
 }
-
-
 class _Registration1State extends State<Registration1> {
   final formKey =GlobalKey();
   String name ="";
   @override
   Widget build(BuildContext context) {
     final double height =MediaQuery.of(context).size.height;
-    final GlobalKey<ScaffoldState> _ScaffoldKey =GlobalKey<ScaffoldState>();
-    
-
+    final GlobalKey<ScaffoldState> _ScaffoldKey =GlobalKey<ScaffoldState>(); 
     return Scaffold(
       key: _ScaffoldKey,
       appBar: AppBar(
