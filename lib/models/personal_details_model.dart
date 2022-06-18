@@ -1,51 +1,81 @@
-import 'package:asensiofinal/models/gender.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PersonalDetailsModel{
+import 'package:asensiofinal/models/gender.dart';
 
-  final String city;
-  final String phoneNumber;
-  final DateTime dob;
-  final String placeOfBirth;
-  final Gender gender;
-  final String nationality;
-  final String numberPlate;
-  final String dl;
-  final String carDocs;
-  final String carImage; 
+class PersonalDetailsModel {
+  final String? city;
+  final String? phoneNumber;
+  final DateTime? dob;
+  final String? placeOfBirth;
+  final Gender? gender;
+  final String? numberPlate;
+  final String? dl;
+  final String? carDocs;
+  final String? carImage;
+  final String? name;
 
-  PersonalDetailsModel({
-    required this.city,required this.phoneNumber,
-    required this.dob, required this.placeOfBirth,
-    required this.gender, required this.nationality,
-    required this.numberPlate, required this.dl,
-    required this.carDocs , required this.carImage
-    });
+  PersonalDetailsModel(
+      this.city,
+      this.name,
+      this.phoneNumber,
+      this.dob,
+      this.placeOfBirth,
+      this.gender,
+      this.numberPlate,
+      this.dl,
+      this.carDocs,
+      this.carImage);
 
-  PersonalDetailsModel.fromJson(Map<String,dynamic> data):
-    city = data['city'],
-    phoneNumber = data['phoneNumber'],
-    dob = (data['dob'] as Timestamp).toDate(),
-    placeOfBirth = data['placeOfBirth'],
-    gender = data['gender'] == 0? Gender.MALE:Gender.FEMALE,
-    nationality = data['nationality'],
-    numberPlate = data['numberPlate'],
-    dl = data['dl'],
-    carDocs = data['carDocs'],
-    carImage = data['carImage']
-    ;
+  PersonalDetailsModel.fromJson(Map<String, dynamic> data)
+      : city = data['city'],
+        name = data['name'],
+        phoneNumber = data['phoneNumber'],
+        dob = data['dob'] == null ? null : (data['dob'] as Timestamp).toDate(),
+        placeOfBirth = data['placeOfBirth'],
+        gender = data['gender'] == null
+            ? null
+            : (data['gender'] == 0 ? Gender.MALE : Gender.FEMALE),
+        numberPlate = data['numberPlate'],
+        dl = data['dl'],
+        carDocs = data['carDocs'],
+        carImage = data['carImage'];
 
-  Map<String,dynamic> toJson()
-  =>{
-    'city': city,
-    'phoneNumber': phoneNumber,
-    'dob' : Timestamp.fromDate(dob),
-    'placeOfBirth' : placeOfBirth,
-    'gender' : gender.index,
-    'nationality': nationality,
-    'numberPlate' : numberPlate,
-    'dl': dl,
-    'carDocs': carDocs,
-    'carImage': carDocs
-  };
+  Map<String, dynamic> toJson() => {
+        'city': city,
+        'phoneNumber': phoneNumber,
+        'dob': Timestamp.fromDate(dob!),
+        'placeOfBirth': placeOfBirth,
+        'gender': gender?.index,
+        'numberPlate': numberPlate,
+        'dl': dl,
+        'carDocs': carDocs,
+        'carImage': carImage,
+        'name': name
+      };
+
+  PersonalDetailsModel copyWith({
+    String? city,
+    String? name,
+    String? phoneNumber,
+    DateTime? dob,
+    String? placeOfBirth,
+    Gender? gender,
+    String? numberPlate,
+    String? dl,
+    String? carDocs,
+    String? carImage,
+  }) {
+    return PersonalDetailsModel(
+      city ?? this.city,
+      name ?? this.name,
+      phoneNumber ?? this.phoneNumber,
+      dob ?? this.dob,
+      placeOfBirth ?? this.placeOfBirth,
+      gender ?? this.gender,
+      numberPlate ?? this.numberPlate,
+      dl ?? this.dl,
+      carDocs ?? this.carDocs,
+      carImage ?? this.carImage,
+    );
+  }
 }

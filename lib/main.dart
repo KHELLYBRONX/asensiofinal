@@ -1,4 +1,5 @@
 import 'package:asensiofinal/provider/location_provider.dart';
+import 'package:asensiofinal/provider/signup_provider.dart';
 import 'package:asensiofinal/screens/Registration.dart';
 import 'package:asensiofinal/screens/home.dart';
 import 'package:asensiofinal/screens/login.dart';
@@ -14,16 +15,14 @@ void main() async {
   await Firebase.initializeApp();
   bool isLoggedIn = AuthService.instance.isLoggedIn;
   var location = await getLocation();
-  runApp(MyApp(
-    position: location,
-    isLoggedIn: isLoggedIn
-  ));
+  runApp(MyApp(position: location, isLoggedIn: isLoggedIn));
 }
 
 class MyApp extends StatelessWidget {
   final Position? position;
   final bool isLoggedIn;
-  const MyApp({Key? key, required this.isLoggedIn ,required this.position}) : super(key: key);
+  const MyApp({Key? key, required this.isLoggedIn, required this.position})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +30,13 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<LocationProvider>(
             create: (_) => LocationProvider(position)),
+        ChangeNotifierProvider(
+          create: (_) => SignUpProvider(),
+        )
       ],
       child: MaterialApp(
-        home: Registration1(),
-        // home: isLoggedIn? const HomeScreen():LoginPage(),
+        // home: Registration1(),
+        home: isLoggedIn ? const HomeScreen() : const LoginPage(),
       ),
     );
   }
