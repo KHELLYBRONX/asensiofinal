@@ -1,6 +1,7 @@
 import 'package:asensiofinal/provider/signup_provider.dart';
 import 'package:asensiofinal/screens/login.dart';
 import 'package:asensiofinal/services/auth_service.dart';
+import 'package:asensiofinal/services/cache_service.dart';
 import 'package:asensiofinal/widgets/map_widget.dart';
 import 'package:asensiofinal/widgets/request_widget.dart';
 import 'package:asensiofinal/widgets/settings_widget.dart';
@@ -49,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               title: const Text('Logout'),
               onTap: () async {
+                await CacheService.instance.deleteUser();
                 await AuthService.instance.logout();
                 Navigator.pushAndRemoveUntil(
                     context,
