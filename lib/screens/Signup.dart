@@ -2,6 +2,8 @@ import 'package:asensiofinal/Animation/fade_animation.dart';
 import 'package:asensiofinal/screens/Registration.dart';
 import 'package:asensiofinal/screens/Signup.dart';
 import 'package:asensiofinal/screens/login.dart';
+import 'package:asensiofinal/services/auth_service.dart';
+import 'package:asensiofinal/widgets/auth_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 
@@ -15,11 +17,15 @@ class _SignUpPageState extends State<SignUpPage> {
   late TextEditingController _emailController;
 
   late TextEditingController _passwordController;
+  late bool _loading;
+  late AuthService _authService; 
 
   @override
   void initState() {
     _emailController = TextEditingController(text: '');
     _passwordController = TextEditingController(text: '');
+    _loading = false;
+    _authService = AuthService.instance;
     
   }
 
@@ -34,9 +40,27 @@ class _SignUpPageState extends State<SignUpPage> {
      if(msg1 != null)return ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg1)));
     //if form is not valid show snackbar
     //register user
-
+    switchLoading();
+    var result = await _authService.signup(_emailController.text,_passwordController.text);
+    switchLoading();
+    if(result is String) {
+      return showDialog(context: context, builder: 
+     (_)=>AlertDialog(
+      title: const Text('Error'),
+      content: Text(result),
+      actions: [
+        TextButton(onPressed: ()=>Navigator.pop(context), child: const Text('OK'))
+      ],
+     ));
+    }
     //else navigate to next screen 
-     Navigator.push(context, MaterialPageRoute(builder: (_)=>Registration1()));
+     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const Registration1()));
+  }
+
+  void switchLoading(){
+    setState(() {
+    _loading =!_loading;
+    });
   }
 
   @override
@@ -49,7 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
 	          children: <Widget>[
 	            Container(
 	              height: 400,
-	              decoration: BoxDecoration(
+	              decoration: const BoxDecoration(
 	                image: DecorationImage(
 	                  image: AssetImage('assets/images/background.png'),
 	                  fit: BoxFit.fill
@@ -62,9 +86,9 @@ class _SignUpPageState extends State<SignUpPage> {
 	                    width: 80,
 	                    height: 200,
 	                    child: FadeAnimation(1, Container(
-	                      decoration: BoxDecoration(
-	                        image: DecorationImage(
-	                          image: AssetImage('assets/images/light-1.png')
+	                      decoration: const BoxDecoration(
+	                        image: const DecorationImage(
+	                          image: const AssetImage('assets/images/light-1.png')
 	                        )
 	                      ),
 	                    )),
@@ -74,8 +98,8 @@ class _SignUpPageState extends State<SignUpPage> {
 	                    width: 80,
 	                    height: 150,
 	                    child: FadeAnimation(1.3, Container(
-	                      decoration: BoxDecoration(
-	                        image: DecorationImage(
+	                      decoration: const BoxDecoration(
+	                        image: const DecorationImage(
 	                          image: AssetImage('assets/images/light-2.png')
 	                        )
 	                      ),
@@ -87,7 +111,7 @@ class _SignUpPageState extends State<SignUpPage> {
 	                    width: 80,
 	                    height: 150,
 	                    child: FadeAnimation(1.5, Container(
-	                      decoration: BoxDecoration(
+	                      decoration: const BoxDecoration(
 	                        image: DecorationImage(
 	                          image: AssetImage('assets/images/clock.png')
 	                        )
@@ -96,9 +120,9 @@ class _SignUpPageState extends State<SignUpPage> {
 	                  ),
 	                  Positioned(
 	                    child: FadeAnimation(1.6, Container(
-	                      margin: EdgeInsets.only(top: 50),
-	                      child: Center(
-	                        child: Text("Ride with truckngo ", style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),),
+	                      margin: const EdgeInsets.only(top: 50),
+	                      child: const Center(
+	                        child: const Text("Ride with truckngo ", style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),),
 	                      ),
 	                    )),
 	                  )
@@ -106,28 +130,28 @@ class _SignUpPageState extends State<SignUpPage> {
 	              ),
 	            ),
 	            Padding(
-	              padding: EdgeInsets.all(30.0),
+	              padding: const EdgeInsets.all(30.0),
 	              child: Column(
 	                children: <Widget>[
 	                  FadeAnimation(1.8, Container(
-	                    padding: EdgeInsets.all(5),
+	                    padding: const EdgeInsets.all(5),
 	                    decoration: BoxDecoration(
 	                      color: Colors.white,
 	                      borderRadius: BorderRadius.circular(10),
 	                      boxShadow: [
-	                        BoxShadow(
-	                          color: Color.fromRGBO(143, 148, 251, .2),
+	                        const BoxShadow(
+	                          color: const Color.fromRGBO(143, 148, 251, .2),
 	                          blurRadius: 20.0,
-	                          offset: Offset(0, 10)
+	                          offset: const Offset(0, 10)
 	                        )
 	                      ]
 	                    ),
 	                    child: Column(
 	                      children: <Widget>[
 	                        Container(
-	                          padding: EdgeInsets.all(8.0),
-	                          decoration: BoxDecoration(
-	                            border: Border(bottom: BorderSide(color: Colors.grey))
+	                          padding: const EdgeInsets.all(8.0),
+	                          decoration: const BoxDecoration(
+	                            border: const Border(bottom: BorderSide(color: Colors.grey))
 	                          ),
 	                          child: TextField(
                               keyboardType: TextInputType.emailAddress,
@@ -140,7 +164,7 @@ class _SignUpPageState extends State<SignUpPage> {
 	                          ),
 	                        ),
 	                        Container(
-	                          padding: EdgeInsets.all(8.0),
+	                          padding: const EdgeInsets.all(8.0),
 	                          child: TextField(
                               controller: 
                               _passwordController,
@@ -154,34 +178,16 @@ class _SignUpPageState extends State<SignUpPage> {
 	                      ],
 	                    ),
 	                  )),
-	                  SizedBox(height: 30,),
-	                  FadeAnimation(2, GestureDetector(
-                      onTap: 
-                      _onNextTapped,
-                                          child: Container(
-                                            height: 50,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  Color.fromRGBO(143, 148, 251, 1),
-                                                  Color.fromRGBO(143, 148, 251, .6),
-                                                ]
-                                              )
-                                            ),
-                                            child: Center(
-                                              child: Text("NEXT", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                                            ),
-                                          ),
-                                        )),
-	                  SizedBox(height: 20,),
+	                  const SizedBox(height: 30,),
+	                  AuthBtn(isLoading: _loading, text: 'NEXT', onTap: ()async=>await _onNextTapped() ),
+                    const SizedBox(height: 20,),
 	                  GestureDetector(
                       onTap: (){
                         Navigator.pop(context);
                       },
-                      child: FadeAnimation(1.5, Text("I Have an account? Sign IN", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),))),
-	                  SizedBox(height: 30,),
-	                  FadeAnimation(1.5, Text("Wants to request a trip? Get Passenger App", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
+                      child: FadeAnimation(1.5, const Text("I Have an account? Sign IN", style: const TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),))),
+	                  const SizedBox(height: 30,),
+	                  FadeAnimation(1.5, const Text("Wants to request a trip? Get Passenger App", style: const TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
 	                ],
 	              ),
 	            )

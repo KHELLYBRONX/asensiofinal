@@ -4,9 +4,15 @@ class AuthService{
 
   late final FirebaseAuth _firebaseAuth;
 
+  static AuthService instance = AuthService._();
+
   AuthService._(){
     _firebaseAuth = FirebaseAuth.instance;
   }
+
+  User? get currentUser => _firebaseAuth.currentUser; 
+
+  bool get isLoggedIn => _firebaseAuth.currentUser == null ?false:true;
 
   Future login(String email,String password)async{
     try{
@@ -27,6 +33,17 @@ class AuthService{
       return e.message;
     }on Exception{
       return 'Error while signing up';
+    }
+  }
+
+  Future updateDisplayNameAndPhoneNumber(String name,String phone)async{
+    try{  
+      await _firebaseAuth.currentUser
+      ?.      
+      updateDisplayName(name);
+      await _firebaseAuth.currentUser?.reload();
+    }on Exception{
+      return 'Error updating data';
     }
   }
 

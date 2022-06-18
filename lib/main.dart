@@ -1,5 +1,8 @@
 import 'package:asensiofinal/provider/location_provider.dart';
+import 'package:asensiofinal/screens/Registration.dart';
+import 'package:asensiofinal/screens/home.dart';
 import 'package:asensiofinal/screens/login.dart';
+import 'package:asensiofinal/services/auth_service.dart';
 import 'package:asensiofinal/utils/get_location.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -9,15 +12,18 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  bool isLoggedIn = AuthService.instance.isLoggedIn;
   var location = await getLocation();
   runApp(MyApp(
     position: location,
+    isLoggedIn: isLoggedIn
   ));
 }
 
 class MyApp extends StatelessWidget {
   final Position? position;
-  const MyApp({Key? key, required this.position}) : super(key: key);
+  final bool isLoggedIn;
+  const MyApp({Key? key, required this.isLoggedIn ,required this.position}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +33,8 @@ class MyApp extends StatelessWidget {
             create: (_) => LocationProvider(position)),
       ],
       child: MaterialApp(
-        home: LoginPage(),
+        home: Registration1(),
+        // home: isLoggedIn? const HomeScreen():LoginPage(),
       ),
     );
   }
