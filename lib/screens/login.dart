@@ -1,74 +1,93 @@
 import 'package:asensiofinal/Animation/fade_animation.dart';
+import 'package:asensiofinal/provider/signup_provider.dart';
 import 'package:asensiofinal/screens/Signup.dart';
 import 'package:asensiofinal/screens/home.dart';
 import 'package:asensiofinal/services/auth_service.dart';
+import 'package:asensiofinal/services/cache_service.dart';
+import 'package:asensiofinal/services/cloud_firestore_service.dart';
 import 'package:asensiofinal/widgets/auth_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
-  
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-    final AuthService _authService = AuthService.instance;
+  final AuthService _authService = AuthService.instance;
+  final CloudFirestoreService _cloudFirestoreService =
+      CloudFirestoreService.instance;
 
-    late String? Function(String?) emailValidator; 
+  late String? Function(String?) emailValidator;
 
-    late String? Function(String?) passwordValidator;
-    late bool loading;
-    late TextEditingController emailController;
-    late TextEditingController passwordController;
-    @override
-    void initState(){
-      loading = false;
-      emailController = TextEditingController(text: '');
-      passwordController = TextEditingController(text: '');
-      emailValidator = ValidationBuilder().email('Invalid Email').build();
-      passwordValidator = ValidationBuilder().minLength(6, 'Password length should be greater than 6').required().build();
-    }
-
-    void switchLoading(){
-        loading = !loading;
-        print(loading);
-        setState(() {
-        // print('object');
-      });
-    }
-
-
-
-  String? checkFormValidity(String email,String password){
-    var res = emailValidator(email);
-    var res1 = passwordValidator(password);
-    return res??res1;
+  late String? Function(String?) passwordValidator;
+  late bool loading;
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  @override
+  void initState() {
+    loading = false;
+    emailController = TextEditingController(text: '');
+    passwordController = TextEditingController(text: '');
+    emailValidator = ValidationBuilder().email('Invalid Email').build();
+    passwordValidator = ValidationBuilder()
+        .minLength(6, 'Password length should be greater than 6')
+        .required()
+        .build();
   }
 
-  Future _onLogIn(String email,String password,BuildContext context)async{
-     var res = checkFormValidity(email, password);
-     if (res != null) return ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(res)));
-      switchLoading();
-      var result = await _authService.login(email, password);
-      switchLoading();
-     if (result is String) {
-       return showDialog(context: context, builder: 
-     (_)=>AlertDialog(
-      title: const Text('Error'),
-      content: Text(result),
-      actions: [
-        TextButton(onPressed: ()=>Navigator.pop(context), child: const Text('OK'))
-      ],
-     ));
-     }
-     Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const HomeScreen()));
+  void switchLoading() {
+    loading = !loading;
+    print(loading);
+    setState(() {
+      // print('object');
+    });
+  }
+
+  String? checkFormValidity(String email, String password) {
+    var res = emailValidator(email);
+    var res1 = passwordValidator(password);
+    return res ?? res1;
+  }
+
+  Future _onLogIn(String email, String password, BuildContext context) async {
+    var res = checkFormValidity(email, password);
+    if (res != null) {
+      return ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(res)));
+    }
+    switchLoading();
+    var result = await _authService.login(email, password);
+    switchLoading();
+    if (result is String) {
+      return showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                title: const Text('Error'),
+                content: Text(result),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('OK'))
+                ],
+              ));
+    }
+    switchLoading();
+    var userDetails = await _cloudFirestoreService.getUserDetails();
+    if (userDetails != null) {
+      await CacheService.instance.saveUser(userDetails);
+      Provider.of<SignUpProvider>(context, listen: false).setField =
+          userDetails;
+    }
+    switchLoading();
+
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const HomeScreen()));
   }
 
   @override
@@ -157,9 +176,10 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10),
-                                boxShadow: const[
+                                boxShadow: const [
                                   BoxShadow(
-                                      color: const Color.fromRGBO(143, 148, 251, .2),
+                                      color: const Color.fromRGBO(
+                                          143, 148, 251, .2),
                                       blurRadius: 20.0,
                                       offset: Offset(0, 10))
                                 ]),
@@ -201,11 +221,12 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       AuthBtn(
                         text: 'Login',
-                        isLoading: loading, onTap: ()async {
-                        await _onLogIn(emailController.text,passwordController.text, context);
-                        
-                        },),
-                       
+                        isLoading: loading,
+                        onTap: () async {
+                          await _onLogIn(emailController.text,
+                              passwordController.text, context);
+                        },
+                      ),
                       const SizedBox(
                         height: 20,
                       ),

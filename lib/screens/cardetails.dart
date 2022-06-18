@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:asensiofinal/models/personal_details_model.dart';
 import 'package:asensiofinal/provider/signup_provider.dart';
 import 'package:asensiofinal/screens/success.dart';
+import 'package:asensiofinal/services/cache_service.dart';
 import 'package:asensiofinal/services/cloud_firestore_service.dart';
 import 'package:asensiofinal/services/picker_service.dart';
 import 'package:asensiofinal/services/storage_service.dart';
@@ -20,6 +21,7 @@ class cardetails extends StatefulWidget {
 
 class _cardetailsState extends State<cardetails> {
   final formKey = GlobalKey();
+  final CacheService _cacheService = CacheService.instance;
   String name = "";
   Uint8List? image;
   File? fileImage;
@@ -94,6 +96,8 @@ class _cardetailsState extends State<cardetails> {
                 ],
               ));
     }
+    await _cacheService.saveUser(
+        Provider.of<SignUpProvider>(context, listen: false).personalDetails!);
     Navigator.push(
         context, MaterialPageRoute(builder: (_) => const SuccessScreen()));
   }

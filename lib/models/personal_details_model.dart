@@ -1,17 +1,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:asensiofinal/models/gender.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+part 'personal_details_model.g.dart';
+
+@HiveType(typeId: 1)
 class PersonalDetailsModel {
+  @HiveField(0)
   final String? city;
+  @HiveField(1)
   final String? phoneNumber;
+  @HiveField(2)
   final DateTime? dob;
+  @HiveField(3)
   final String? placeOfBirth;
+  @HiveField(4)
   final Gender? gender;
+  @HiveField(5)
   final String? numberPlate;
+  @HiveField(6)
   final String? dl;
+  @HiveField(7)
   final String? carDocs;
+  @HiveField(8)
   final String? carImage;
+  @HiveField(9)
   final String? name;
 
   PersonalDetailsModel(

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 class SignUpProvider extends ChangeNotifier {
   PersonalDetailsModel? _personalDetails;
 
-  SignUpProvider();
+  SignUpProvider(PersonalDetailsModel? data) {
+    _personalDetails = data;
+  }
 
   PersonalDetailsModel? get personalDetails => _personalDetails;
 

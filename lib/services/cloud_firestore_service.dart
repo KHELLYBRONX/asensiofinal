@@ -10,6 +10,21 @@ class CloudFirestoreService {
     _firebaseFirestore = FirebaseFirestore.instance;
   }
 
+  Future<PersonalDetailsModel?> getUserDetails() async {
+    try {
+      var uid = AuthService.instance.currentUser?.uid;
+      var res = await _firebaseFirestore
+          .collection('DriverData')
+          .doc(uid)
+          .withConverter<PersonalDetailsModel>(
+              fromFirestore: (snapshot, options) =>
+                  PersonalDetailsModel.fromJson(snapshot.data() ?? {}),
+              toFirestore: (model, _) => model.toJson())
+          .get();
+      return res.data();
+    } on Exception {}
+  }
+
   Future sendPersonalData(PersonalDetailsModel data) async {
     try {
       var uid = AuthService.instance.currentUser?.uid;
