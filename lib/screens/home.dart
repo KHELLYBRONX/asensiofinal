@@ -1,7 +1,11 @@
+import 'package:asensiofinal/provider/signup_provider.dart';
+import 'package:asensiofinal/screens/login.dart';
+import 'package:asensiofinal/services/auth_service.dart';
 import 'package:asensiofinal/widgets/map_widget.dart';
 import 'package:asensiofinal/widgets/request_widget.dart';
 import 'package:asensiofinal/widgets/settings_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,6 +15,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late AuthService _authService;
+
+  @override
+  void initState() {
+    _authService = AuthService.instance;
+  }
+
   void _onChangeTab(int index) {
     if (_currentIndex == index) {
       return;
@@ -24,15 +35,27 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final statusBar = MediaQuery.of(context).padding.top;
+    var signUpProvider = Provider.of<SignUpProvider>(context);
     return Scaffold(
       // appBar: AppBar(),
       drawer: Drawer(
         child: Column(
-          children: const [
+          children: [
             UserAccountsDrawerHeader(
-                currentAccountPicture: CircleAvatar(child: Icon(Icons.person)),
-                accountName: Text('Asenso Isaac'),
-                accountEmail: Text('sdfdsf@gmail.com'))
+                currentAccountPicture:
+                    const CircleAvatar(child: Icon(Icons.person)),
+                accountName: Text(signUpProvider.personalDetails?.name ?? ''),
+                accountEmail: Text(_authService.currentUser!.email!)),
+            ListTile(
+              title: const Text('Logout'),
+              onTap: () async {
+                await AuthService.instance.logout();
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    (route) => false);
+              },
+            )
           ],
         ),
       ),
