@@ -1,8 +1,10 @@
 import 'package:asensiofinal/models/gender.dart';
 import 'package:asensiofinal/models/personal_details_model.dart';
+import 'package:asensiofinal/models/truck_type.dart';
 import 'package:asensiofinal/provider/location_provider.dart';
 import 'package:asensiofinal/provider/signup_provider.dart';
 import 'package:asensiofinal/screens/Registration.dart';
+import 'package:asensiofinal/screens/cardetails.dart';
 import 'package:asensiofinal/screens/home.dart';
 import 'package:asensiofinal/screens/login.dart';
 import 'package:asensiofinal/services/auth_service.dart';
@@ -20,6 +22,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(PersonalDetailsModelAdapter());
   Hive.registerAdapter(GenderAdapter());
+  Hive.registerAdapter(TruckTypeAdapter());
   bool isLoggedIn = AuthService.instance.isLoggedIn;
   PersonalDetailsModel? res;
   if (isLoggedIn) {
@@ -52,7 +55,6 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        // home: Registration1(),
         home: isLoggedIn ? const HomeScreen() : const LoginPage(),
       ),
     );

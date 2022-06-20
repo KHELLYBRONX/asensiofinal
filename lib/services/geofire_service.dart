@@ -6,7 +6,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 
 class GeoFireService {
-  late Geoflutterfire geo;
+  late Geoflutterfire? geo;
   static final instance = GeoFireService._();
   GeoFireService._() {
     geo = Geoflutterfire();
@@ -15,16 +15,19 @@ class GeoFireService {
   Future<void> addLocation(
       PersonalDetailsModel personalDetailsModel, Position pos) async {
     var ref = FirebaseFirestore.instance.collection('DriverLocation');
+    geo ??= Geoflutterfire();
     GeoFirePoint myLocation =
-        geo.point(latitude: pos.latitude, longitude: pos.longitude);
+        geo!.point(latitude: pos.latitude, longitude: pos.longitude);
     var uid = AuthService.instance.currentUser?.uid;
-    if (lastPosition != null && lastPosition!.equals(pos) ||
-        lastPosition!.hasNotChanged(pos)) {
-      // print('equal');
-      return;
+    if (lastPosition != null) {
+      if (lastPosition!.equals(pos) || lastPosition!.hasNotChanged(pos)) {
+        // print('equal');
+        return;
+      }
     }
+
     lastPosition = pos;
-    await geo.collection(collectionRef: ref).setDoc(uid!, {
+    await geo!.collection(collectionRef: ref).setDoc(uid!, {
       'position': myLocation.data,
       ...personalDetailsModel.driverCurrentLocation
     });

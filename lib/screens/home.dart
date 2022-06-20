@@ -43,8 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             UserAccountsDrawerHeader(
-                currentAccountPicture:
-                    const CircleAvatar(child: Icon(Icons.person)),
+                currentAccountPicture: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        signUpProvider.personalDetails!.driverImage!)),
                 accountName: Text(signUpProvider.personalDetails?.name ?? ''),
                 accountEmail: Text(_authService.currentUser!.email!)),
             ListTile(

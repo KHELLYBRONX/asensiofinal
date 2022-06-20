@@ -22,7 +22,9 @@ class SignUpProvider extends ChangeNotifier {
         gender: model.gender,
         numberPlate: model.numberPlate,
         phoneNumber: model.phoneNumber,
-        placeOfBirth: model.placeOfBirth);
+        placeOfBirth: model.placeOfBirth,
+        driverImage: model.driverImage,
+        truckType: model.truckType);
     notifyListeners();
   }
 }
