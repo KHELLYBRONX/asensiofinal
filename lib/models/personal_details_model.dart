@@ -67,6 +67,13 @@ class PersonalDetailsModel {
         'name': name
       };
 
+  Map<String, dynamic> get driverCurrentLocation => {
+        'name': name,
+        'phoneNumber': phoneNumber,
+        'numberPlate': numberPlate,
+        'carImage': carImage,
+      };
+
   PersonalDetailsModel copyWith({
     String? city,
     String? name,

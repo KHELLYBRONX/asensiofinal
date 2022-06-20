@@ -11,3 +11,5 @@ Future<Position?> getLocation() async {
   }
   return null;
 }
+
+Position? lastPosition;

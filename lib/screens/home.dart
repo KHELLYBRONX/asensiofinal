@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IndexedStack(
             index: _currentIndex,
             children: [
-              MapWidget(),
+              MapWidget(personalDetailsModel: signUpProvider.personalDetails!),
               const RequestWidget(),
               const SettingsWidget(),
             ],

@@ -16,17 +16,18 @@ class CacheService {
 
   Future<void> saveUser(PersonalDetailsModel data) async {
     box ??= await Hive.openBox<PersonalDetailsModel>(userBox);
-    box?.add(data);
-    // box?.put('user', data);
+    // box?.add(data);
+    box?.put('user', data);
   }
 
   Future deleteUser() async {
     box ??= await Hive.openBox(userBox);
+    box?.delete('user');
     box?.clear();
   }
 
   Future<PersonalDetailsModel?> getUser() async {
     box ??= await Hive.openBox(userBox);
-    return box?.getAt(0);
+    return box?.get('user');
   }
 }
