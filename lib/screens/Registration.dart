@@ -1,9 +1,14 @@
+// ignore: file_names
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:asensiofinal/models/personal_details_model.dart';
 import 'package:asensiofinal/provider/signup_provider.dart';
 import 'package:asensiofinal/screens/Registration2.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:asensiofinal/services/picker_service.dart';
+import 'package:asensiofinal/utils/current_driver_image_util.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class Registration1 extends StatefulWidget {
@@ -23,6 +28,8 @@ class _Registration1State extends State<Registration1> {
   late TextEditingController _nameController;
   late TextEditingController _cityController;
   late TextEditingController _phoneController;
+  Uint8List? userImageData;
+  File? userImage;
 
   @override
   void initState() {
@@ -49,6 +56,12 @@ class _Registration1State extends State<Registration1> {
           .showSnackBar(SnackBar(content: Text(msg2)));
     }
 
+    if (userImage == null) {
+      return ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select an image to proceed')));
+    }
+
+    print(currentDriverImage);
     //send data to firebase
     Provider.of<SignUpProvider>(context, listen: false).setField =
         PersonalDetailsModel.fromJson({
@@ -59,6 +72,44 @@ class _Registration1State extends State<Registration1> {
     //navigate to next screen
     Navigator.push(
         context, MaterialPageRoute(builder: (_) => const Registration2()));
+  }
+
+  Future _onChangeImage() async {
+    var res = await showDialog(
+        context: context,
+        builder: (ctx) {
+          return SimpleDialog(
+            children: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, ImageSource.camera);
+                  },
+                  child: const Text('Camera')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, ImageSource.gallery);
+                  },
+                  child: const Text('Gallery')),
+            ],
+            title: const Center(
+              child: Text(
+                'Choose an image source',
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+          );
+        });
+
+    if (res != null) {
+      var image = await PickerService.instance.pickImage(res);
+      if (image != null) {
+        setState(() {
+          userImageData = image[0];
+          userImage = File(image[1]);
+          currentDriverImage = File(image[1]);
+        });
+      }
+    }
   }
 
   @override
@@ -96,8 +147,24 @@ class _Registration1State extends State<Registration1> {
                 style: TextStyle(fontSize: 30, color: Colors.blue[600]),
               ),
               SizedBox(
-                height: height * 0.05,
+                height: height * 0.005,
               ),
+              Center(
+                  child: CircleAvatar(
+                      backgroundColor: userImageData != null
+                          ? null
+                          : Colors.black.withOpacity(.2),
+                      radius: 50,
+                      backgroundImage: userImageData != null
+                          ? MemoryImage(userImageData!)
+                          : null,
+                      child: userImageData != null
+                          ? null
+                          : const Icon(Icons.image))),
+              Center(
+                  child: TextButton(
+                      onPressed: _onChangeImage,
+                      child: const Text("Change Image"))),
               TextField(
                 controller: _nameController,
                 decoration: const InputDecoration(

@@ -37,4 +37,18 @@ class StorageService {
       rethrow;
     }
   }
+
+  Future uploadDriverImage(File file) async {
+    try {
+      String uid = const Uuid().v1();
+      var snapshot = await _firebaseStorage
+          .ref()
+          .child('driverImages/imageName' + uid)
+          .putFile(file);
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } on Exception {
+      rethrow;
+    }
+  }
 }

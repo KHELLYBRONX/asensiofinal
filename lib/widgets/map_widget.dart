@@ -28,16 +28,23 @@ class _MapWidgetState extends State<MapWidget> {
 
   late LocationService _locationService;
   late GeoFireService _geoFireService;
+  late StreamSubscription<Position> subscription;
 
   @override
   void initState() {
     _locationService = LocationService.instance;
     _geoFireService = GeoFireService.instance;
-    _locationService.getLocationStream().listen((event) {
+    subscription = _locationService.getLocationStream().listen((event) {
       if (event != null) {
         _geoFireService.addLocation(widget.personalDetailsModel, event);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   @override

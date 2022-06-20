@@ -1,3 +1,4 @@
+import 'package:asensiofinal/models/truck_type.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:asensiofinal/models/gender.dart';
@@ -27,6 +28,10 @@ class PersonalDetailsModel {
   final String? carImage;
   @HiveField(9)
   final String? name;
+  @HiveField(10)
+  final String? driverImage;
+  @HiveField(11)
+  final TruckType? truckType;
 
   PersonalDetailsModel(
       this.city,
@@ -38,7 +43,34 @@ class PersonalDetailsModel {
       this.numberPlate,
       this.dl,
       this.carDocs,
-      this.carImage);
+      this.carImage,
+      this.driverImage,
+      this.truckType);
+
+  static TruckType? getTruckType(int index) {
+    switch (index) {
+      case 0:
+        return TruckType.class_1;
+      case 1:
+        return TruckType.class_2a;
+      case 2:
+        return TruckType.class_2b;
+      case 3:
+        return TruckType.class_3;
+      case 4:
+        return TruckType.class_4;
+      case 5:
+        return TruckType.class_5;
+      case 6:
+        return TruckType.class_6;
+      case 7:
+        return TruckType.class_7;
+      case 8:
+        return TruckType.class_8;
+      default:
+        null;
+    }
+  }
 
   PersonalDetailsModel.fromJson(Map<String, dynamic> data)
       : city = data['city'],
@@ -52,7 +84,9 @@ class PersonalDetailsModel {
         numberPlate = data['numberPlate'],
         dl = data['dl'],
         carDocs = data['carDocs'],
-        carImage = data['carImage'];
+        carImage = data['carImage'],
+        driverImage = data['driverImage'],
+        truckType = getTruckType(data['truckType']);
 
   Map<String, dynamic> toJson() => {
         'city': city,
@@ -64,7 +98,9 @@ class PersonalDetailsModel {
         'dl': dl,
         'carDocs': carDocs,
         'carImage': carImage,
-        'name': name
+        'name': name,
+        'driverImage': driverImage,
+        'truckType': truckType?.index
       };
 
   Map<String, dynamic> get driverCurrentLocation => {
@@ -72,31 +108,35 @@ class PersonalDetailsModel {
         'phoneNumber': phoneNumber,
         'numberPlate': numberPlate,
         'carImage': carImage,
+        'driverImage': driverImage,
+        'truckType': truckType?.index
       };
 
-  PersonalDetailsModel copyWith({
-    String? city,
-    String? name,
-    String? phoneNumber,
-    DateTime? dob,
-    String? placeOfBirth,
-    Gender? gender,
-    String? numberPlate,
-    String? dl,
-    String? carDocs,
-    String? carImage,
-  }) {
+  PersonalDetailsModel copyWith(
+      {String? city,
+      String? name,
+      String? phoneNumber,
+      DateTime? dob,
+      String? placeOfBirth,
+      Gender? gender,
+      String? numberPlate,
+      String? dl,
+      String? carDocs,
+      String? carImage,
+      String? driverImage,
+      TruckType? truckType}) {
     return PersonalDetailsModel(
-      city ?? this.city,
-      name ?? this.name,
-      phoneNumber ?? this.phoneNumber,
-      dob ?? this.dob,
-      placeOfBirth ?? this.placeOfBirth,
-      gender ?? this.gender,
-      numberPlate ?? this.numberPlate,
-      dl ?? this.dl,
-      carDocs ?? this.carDocs,
-      carImage ?? this.carImage,
-    );
+        city ?? this.city,
+        name ?? this.name,
+        phoneNumber ?? this.phoneNumber,
+        dob ?? this.dob,
+        placeOfBirth ?? this.placeOfBirth,
+        gender ?? this.gender,
+        numberPlate ?? this.numberPlate,
+        dl ?? this.dl,
+        carDocs ?? this.carDocs,
+        carImage ?? this.carImage,
+        driverImage ?? this.driverImage,
+        truckType ?? this.truckType);
   }
 }

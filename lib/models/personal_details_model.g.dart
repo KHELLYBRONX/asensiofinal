@@ -27,13 +27,15 @@ class PersonalDetailsModelAdapter extends TypeAdapter<PersonalDetailsModel> {
       fields[6] as String?,
       fields[7] as String?,
       fields[8] as String?,
+      fields[10] as String?,
+      fields[11] as TruckType,
     );
   }
 
   @override
   void write(BinaryWriter writer, PersonalDetailsModel obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.city)
       ..writeByte(1)
@@ -53,7 +55,11 @@ class PersonalDetailsModelAdapter extends TypeAdapter<PersonalDetailsModel> {
       ..writeByte(8)
       ..write(obj.carImage)
       ..writeByte(9)
-      ..write(obj.name);
+      ..write(obj.name)
+      ..writeByte(10)
+      ..write(obj.driverImage)
+      ..writeByte(11)
+      ..write(obj.truckType);
   }
 
   @override

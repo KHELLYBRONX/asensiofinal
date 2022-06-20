@@ -2,12 +2,14 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:asensiofinal/models/personal_details_model.dart';
+import 'package:asensiofinal/models/truck_type.dart';
 import 'package:asensiofinal/provider/signup_provider.dart';
 import 'package:asensiofinal/screens/success.dart';
 import 'package:asensiofinal/services/cache_service.dart';
 import 'package:asensiofinal/services/cloud_firestore_service.dart';
 import 'package:asensiofinal/services/picker_service.dart';
 import 'package:asensiofinal/services/storage_service.dart';
+import 'package:asensiofinal/utils/current_driver_image_util.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +32,8 @@ class _cardetailsState extends State<cardetails> {
   late TextEditingController numberPlate;
   late TextEditingController driverLicense;
   late bool loading;
+  late List<TruckType> _truckTypes;
+  late TruckType _selectedTruckType;
 
   @override
   void initState() {
@@ -37,6 +41,18 @@ class _cardetailsState extends State<cardetails> {
     numberPlate = TextEditingController(text: '');
     driverLicense = TextEditingController(text: '');
     loading = false;
+    _selectedTruckType = TruckType.class_1;
+    _truckTypes = [
+      TruckType.class_1,
+      TruckType.class_2a,
+      TruckType.class_2b,
+      TruckType.class_3,
+      TruckType.class_4,
+      TruckType.class_5,
+      TruckType.class_6,
+      TruckType.class_7,
+      TruckType.class_8
+    ];
   }
 
   String? validateForm() {
@@ -64,6 +80,7 @@ class _cardetailsState extends State<cardetails> {
         PersonalDetailsModel.fromJson({
       'numberPlate': numberPlate.text,
       'dl': driverLicense.text,
+      'truckType': _selectedTruckType.index,
     });
 
     setState(() {
@@ -73,16 +90,16 @@ class _cardetailsState extends State<cardetails> {
     var instance = StorageService.instance;
     String carDocs = await instance.uploadCarDocs(fileDocument!);
     String carImage = await instance.uploadCarImage(fileImage!);
+    String driverImage = await instance.uploadDriverImage(currentDriverImage!);
     Provider.of<SignUpProvider>(context, listen: false).setField =
         PersonalDetailsModel.fromJson({
       'carDocs': carDocs,
       'carImage': carImage,
+      'driverImage': driverImage,
     });
     var result = await CloudFirestoreService.instance.sendPersonalData(
         Provider.of<SignUpProvider>(context, listen: false).personalDetails!);
-    setState(() {
-      loading = false;
-    });
+
     if (result is String) {
       return showDialog(
           context: context,
@@ -98,6 +115,9 @@ class _cardetailsState extends State<cardetails> {
     }
     await _cacheService.saveUser(
         Provider.of<SignUpProvider>(context, listen: false).personalDetails!);
+    setState(() {
+      loading = false;
+    });
     Navigator.push(
         context, MaterialPageRoute(builder: (_) => const SuccessScreen()));
   }
@@ -143,7 +163,7 @@ class _cardetailsState extends State<cardetails> {
                 SizedBox(
                   height: height * 0.05,
                 ),
-                TextFormField(
+                TextField(
                   controller: numberPlate,
                   decoration: const InputDecoration(
                     labelText: "Enter number plate ",
@@ -152,12 +172,36 @@ class _cardetailsState extends State<cardetails> {
                 SizedBox(
                   height: height * 0.05,
                 ),
-                TextFormField(
+                TextField(
                   controller: driverLicense,
                   decoration: const InputDecoration(
                     labelText: "Driving license number ",
                   ),
                 ),
+                SizedBox(
+                  height: height * 0.05,
+                ),
+                const Text(
+                  'Select Truck Type',
+                  style: TextStyle(color: Colors.black26),
+                ),
+                DropdownButtonFormField<TruckType>(
+                    hint: const Text('Select Truck Type'),
+                    value: _selectedTruckType,
+                    items: _truckTypes
+                        .map((e) => DropdownMenuItem<TruckType>(
+                              child: Text(e.name.split(RegExp('_')).join(' ')),
+                              value: e,
+                            ))
+                        .toList(),
+                    onChanged: (val) {
+                      if (val != null) {
+                        setState(() {
+                          _selectedTruckType = val;
+                        });
+                      }
+                    }),
+
                 SizedBox(
                   height: height * 0.05,
                 ),
