@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:asensiofinal/models/personal_details_model.dart';
 import 'package:asensiofinal/provider/location_provider.dart';
+import 'package:asensiofinal/provider/marker_provider.dart';
+import 'package:asensiofinal/provider/polylines_provider.dart';
 import 'package:asensiofinal/services/geofire_service.dart';
 import 'package:asensiofinal/services/location_service.dart';
 import 'package:flutter/material.dart';
@@ -58,16 +60,21 @@ class _MapWidgetState extends State<MapWidget> {
       return StreamBuilder<Position>(
           stream: LocationService.instance.getLocationStream(),
           builder: (context, snapshot) {
-            return GoogleMap(
-                onCameraMove: ((position) => print(position)),
-                buildingsEnabled: true,
-                // liteModeEnabled: true,
-                myLocationEnabled: true,
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                },
-                compassEnabled: true,
-                initialCameraPosition: pos);
+            return Consumer<PolyLinesProvider>(
+                builder: (context, snapshot, child) {
+              return GoogleMap(
+                  markers: Provider.of<MarkersProvider>(context).getMarker,
+                  polylines: snapshot.polylines,
+                  onCameraMove: ((position) => print(position)),
+                  buildingsEnabled: true,
+                  // liteModeEnabled: true,
+                  myLocationEnabled: true,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                  compassEnabled: true,
+                  initialCameraPosition: pos);
+            });
           });
     });
   }
