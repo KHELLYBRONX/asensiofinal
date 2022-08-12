@@ -2,6 +2,8 @@ import 'package:asensiofinal/models/gender.dart';
 import 'package:asensiofinal/models/personal_details_model.dart';
 import 'package:asensiofinal/models/truck_type.dart';
 import 'package:asensiofinal/provider/location_provider.dart';
+import 'package:asensiofinal/provider/marker_provider.dart';
+import 'package:asensiofinal/provider/polylines_provider.dart';
 import 'package:asensiofinal/provider/signup_provider.dart';
 import 'package:asensiofinal/screens/Registration.dart';
 import 'package:asensiofinal/screens/cardetails.dart';
@@ -52,6 +54,12 @@ class MyApp extends StatelessWidget {
             create: (_) => LocationProvider(position)),
         ChangeNotifierProvider(
           create: (_) => SignUpProvider(personalDetailsModel),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MarkersProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PolyLinesProvider(),
         )
       ],
       child: MaterialApp(
