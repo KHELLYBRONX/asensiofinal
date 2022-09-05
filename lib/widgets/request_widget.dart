@@ -1,3 +1,4 @@
+import 'package:asensiofinal/models/ride.dart';
 import 'package:asensiofinal/provider/location_provider.dart';
 import 'package:asensiofinal/provider/marker_provider.dart';
 import 'package:asensiofinal/provider/polylines_provider.dart';
@@ -10,8 +11,47 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-class RequestWidget extends StatelessWidget {
+class RequestWidget extends StatefulWidget {
   const RequestWidget({Key? key}) : super(key: key);
+
+  @override
+  State<RequestWidget> createState() => _RequestWidgetState();
+}
+
+class _RequestWidgetState extends State<RequestWidget> {
+  late MarkersProvider _markersProvider;
+  late PolyLinesProvider _polyLinesProvider;
+  late LocationProvider _locationProvider;
+  late NavigatorState _navigator;
+
+  late bool _isLoading;
+
+  @override
+  void didChangeDependencies() {
+    _markersProvider = Provider.of<MarkersProvider>(context, listen: false);
+    _polyLinesProvider = Provider.of<PolyLinesProvider>(context, listen: false);
+    _locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    _navigator = Navigator.of(context);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _markersProvider = Provider.of<MarkersProvider>(context, listen: false);
+    _polyLinesProvider = Provider.of<PolyLinesProvider>(context, listen: false);
+    _locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    _navigator = Navigator.of(context);
+    _isLoading = false;
+  }
+
+  @override
+  void dispose() {
+    _markersProvider.dispose();
+    _polyLinesProvider.dispose();
+    _locationProvider.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +75,7 @@ class RequestWidget extends StatelessWidget {
                     );
                   }
                   if (snapshot.hasData) {
-                    var data = Utils.filterRides(
+                    var data = Utils.filterWaitingRides(
                         snapshot.data?.value as Map<dynamic, dynamic>);
                     if (data.isEmpty) {
                       return SizedBox(
@@ -54,7 +94,7 @@ class RequestWidget extends StatelessWidget {
                         height: devSize.height,
                         child: ListView.separated(
                             itemBuilder: ((context, index) => ListTile(
-                                  leading: Icon(Icons.fire_truck),
+                                  leading: const Icon(Icons.fire_truck),
                                   title: Text(data[index].destinationPlaceName),
                                   subtitle:
                                       Text('status: ' + data[index].status),
@@ -68,7 +108,8 @@ class RequestWidget extends StatelessWidget {
                                     showDialog(
                                         context: context,
                                         builder: (_) => AlertDialog(
-                                              title: Text('Confirm Ride?'),
+                                              title:
+                                                  const Text('Confirm Ride?'),
                                               content: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -88,63 +129,83 @@ class RequestWidget extends StatelessWidget {
                                                 ],
                                               ),
                                               actions: [
-                                                TextButton(
-                                                    onPressed: () async {
-                                                      await RealtimeDatabaseService
-                                                          .instance
-                                                          .acceptRide(
-                                                              data[index]);
-                                                      Provider.of<MarkersProvider>(
-                                                              context,
-                                                              listen: false)
-                                                          .addMarker = Provider
-                                                              .of<LocationProvider>(
+                                                _isLoading
+                                                    ? const CircularProgressIndicator()
+                                                    : TextButton(
+                                                        onPressed: () async {
+                                                          if (Provider.of<
+                                                                      PolyLinesProvider>(
                                                                   context,
                                                                   listen: false)
-                                                          .getLatLng!;
-                                                      Provider.of<MarkersProvider>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .addMarker =
-                                                          data[index].location;
-                                                      Provider.of<MarkersProvider>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .addMarker =
-                                                          data[index].des;
-                                                      Navigator.pop(context);
-
-                                                      //From driver to pickup
-                                                      // var res = await RouteService
-                                                      //     .instance
-                                                      //     .getPolyCoordinates(
-                                                      //         Provider.of<LocationProvider>(
-                                                      //                 context,
-                                                      //                 listen:
-                                                      //                     false)
-                                                      //             .getLatLng!,
-                                                      //         data[index]
-                                                      //             .location);
-                                                      //from pickup to destination
-                                                      var res1 = await RouteService
-                                                          .instance
-                                                          .getPolyCoordinates(
+                                                              .polylines
+                                                              .isNotEmpty) {
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                                    SnackBar(
+                                                                        content:
+                                                                            Row(
+                                                              children: const [
+                                                                Icon(
+                                                                  Icons.error,
+                                                                  color: Colors
+                                                                      .red,
+                                                                ),
+                                                                Text(
+                                                                    'Please complete your ongoing ride')
+                                                              ],
+                                                            )));
+                                                            return;
+                                                          }
+                                                          setState(() {
+                                                            _isLoading = true;
+                                                          });
+                                                          await RealtimeDatabaseService
+                                                              .instance
+                                                              .acceptRide(
+                                                                  data[index]);
+                                                          _markersProvider
+                                                                  .addMarker =
+                                                              _locationProvider
+                                                                  .getLatLng!;
+                                                          _markersProvider
+                                                                  .addMarker =
                                                               data[index]
-                                                                  .location,
-                                                              data[index].des);
-                                                      // Provider.of<PolyLinesProvider>(
-                                                      //         context,
-                                                      //         listen: false)
-                                                      //     .addPolyLine(res);
-                                                      Provider.of<PolyLinesProvider>(
-                                                              context,
-                                                              listen: false)
-                                                          .addPolyLine(
-                                                        res1,
-                                                      );
-                                                    },
-                                                    child:
-                                                        const Text('ACCEPT')),
+                                                                  .location;
+                                                          _markersProvider
+                                                                  .addMarker =
+                                                              data[index].des;
+                                                          // Navigator.pop(context);
+
+                                                          // From driver to pickup
+                                                          var res = await RouteService
+                                                              .instance
+                                                              .getPolyCoordinates(
+                                                                  _locationProvider
+                                                                      .getLatLng!,
+                                                                  data[index]
+                                                                      .location);
+                                                          // from pickup to destination
+                                                          var res1 = await RouteService
+                                                              .instance
+                                                              .getPolyCoordinates(
+                                                                  data[index]
+                                                                      .location,
+                                                                  data[index]
+                                                                      .des);
+                                                          _polyLinesProvider
+                                                              .addPolyLine(res);
+                                                          _polyLinesProvider
+                                                              .addPolyLine(
+                                                            res1,
+                                                          );
+                                                          setState(() {
+                                                            _isLoading = false;
+                                                          });
+                                                          _navigator.pop();
+                                                        },
+                                                        child: const Text(
+                                                            'ACCEPT')),
                                                 TextButton(
                                                     onPressed: () async {
                                                       Navigator.pop(context);
@@ -161,7 +222,6 @@ class RequestWidget extends StatelessWidget {
                                 )),
                             separatorBuilder: (_, i) => const Divider(),
                             itemCount: data.length));
-                    print(data);
                   }
                   return Container();
                 })

@@ -24,6 +24,12 @@ class RealtimeDatabaseService {
         .update({'status': 'accepted'});
   }
 
+  Future<void> endRide(Ride ride) async {
+    await _firebaseFirestore
+        .ref('rideRequest/${ride.id}')
+        .update({'status': 'ended'});
+  }
+
   Future<void> cancelRide(Ride ride) async {
     await _firebaseFirestore.ref('rideRequest/${ride.id}').remove();
   }
