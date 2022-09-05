@@ -2,6 +2,7 @@ import 'package:asensiofinal/provider/signup_provider.dart';
 import 'package:asensiofinal/screens/login.dart';
 import 'package:asensiofinal/services/auth_service.dart';
 import 'package:asensiofinal/services/cache_service.dart';
+import 'package:asensiofinal/widgets/history_tab.dart';
 import 'package:asensiofinal/widgets/map_widget.dart';
 import 'package:asensiofinal/widgets/request_widget.dart';
 import 'package:asensiofinal/widgets/settings_widget.dart';
@@ -69,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               MapWidget(personalDetailsModel: signUpProvider.personalDetails!),
               const RequestWidget(),
+              const HistoryTab(),
               const SettingsWidget(),
             ],
           ),
@@ -108,8 +110,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       IconButton(
                           onPressed: () => _onChangeTab(2),
                           icon: Icon(
-                            Icons.settings,
+                            Icons.history,
                             color: _currentIndex == 2 ? Colors.blue : null,
+                          )),
+                      IconButton(
+                          onPressed: () => _onChangeTab(3),
+                          icon: Icon(
+                            Icons.settings,
+                            color: _currentIndex == 3 ? Colors.blue : null,
                           )),
                     ],
                   )),

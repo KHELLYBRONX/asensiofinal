@@ -17,6 +17,10 @@ class PolyLinesProvider extends ChangeNotifier {
       width: 8,
     );
     _polylines.add(polyline);
-    notifyListeners();
+    // notifyListeners();
+  }
+
+  void empty() {
+    _polylines = {};
   }
 }

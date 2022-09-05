@@ -15,6 +15,6 @@ class LocationProvider extends ChangeNotifier {
 
   set postion(Position position) {
     _position = position;
-    notifyListeners();
+    // notifyListeners();
   }
 }

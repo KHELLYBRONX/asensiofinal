@@ -13,7 +13,11 @@ class MarkersProvider extends ChangeNotifier {
         markerId: MarkerId(pos.toString()),
         position: pos,
         icon: BitmapDescriptor.defaultMarker));
-    notifyListeners();
+    // notifyListeners();
+  }
+
+  void empty() {
+    _markers = {};
   }
 
   void removeMarker(LatLng pos) {
