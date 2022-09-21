@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundImage: NetworkImage(
                         signUpProvider.personalDetails!.driverImage!)),
                 accountName: Text(signUpProvider.personalDetails?.name ?? ''),
-                accountEmail: Text(_authService.currentUser!.email!)),
+                accountEmail: Text(_authService.currentUser?.email ?? "")),
             ListTile(
               title: const Text('Logout'),
               onTap: () async {

@@ -12,6 +12,9 @@ class Ride {
   final String status;
   final String destinationPlaceName;
   final String pickupPlaceName;
+  final String userPhoneNumber;
+  final String clientName;
+  final String driverPhoneNumber;
 
   Ride.fromJson(Map data)
       : createdAt = (DateTime.parse(data['created_at'])),
@@ -26,5 +29,8 @@ class Ride {
         status = data['status'],
         destinationPlaceName = data['destination_place_name'],
         pickupPlaceName = data['pickup_place_name'],
-        price = data['price'].toDouble();
+        userPhoneNumber = data['user_phone_number'],
+        clientName = data['name'],
+        driverPhoneNumber = data['drivers_phone_number'],
+        price = data['price'] == null ? 0 : data['price']?.toDouble();
 }
