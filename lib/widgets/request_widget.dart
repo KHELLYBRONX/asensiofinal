@@ -116,8 +116,13 @@ class _RequestWidgetState extends State<RequestWidget> {
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   _Label(
-                                                      label: 'Email',
-                                                      value: data[index].email),
+                                                      label: 'Name',
+                                                      value: data[index]
+                                                          .clientName),
+                                                  _Label(
+                                                      label: 'Phone number',
+                                                      value: data[index]
+                                                          .userPhoneNumber),
                                                   _Label(
                                                       label: 'Destination',
                                                       value: data[index]

@@ -14,57 +14,32 @@ class TruckTypeAdapter extends TypeAdapter<TruckType> {
   TruckType read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return TruckType.class_1;
+        return TruckType.MINI_TRUCK_PICK_UP;
       case 1:
-        return TruckType.class_2a;
+        return TruckType.MID_SIZED_TRUCK_PICK_UP;
       case 2:
-        return TruckType.class_2b;
+        return TruckType.COMPACT_TRUCK_PICK_UP;
       case 3:
-        return TruckType.class_3;
-      case 4:
-        return TruckType.class_4;
-      case 5:
-        return TruckType.class_5;
-      case 6:
-        return TruckType.class_6;
-      case 7:
-        return TruckType.class_7;
-      case 8:
-        return TruckType.class_8;
+        return TruckType.FULL_SIZED_TRUCK_PICK_UP;
       default:
-        return TruckType.class_1;
+        return TruckType.MINI_TRUCK_PICK_UP;
     }
   }
 
   @override
   void write(BinaryWriter writer, TruckType obj) {
     switch (obj) {
-      case TruckType.class_1:
+      case TruckType.MINI_TRUCK_PICK_UP:
         writer.writeByte(0);
         break;
-      case TruckType.class_2a:
+      case TruckType.MID_SIZED_TRUCK_PICK_UP:
         writer.writeByte(1);
         break;
-      case TruckType.class_2b:
+      case TruckType.COMPACT_TRUCK_PICK_UP:
         writer.writeByte(2);
         break;
-      case TruckType.class_3:
+      case TruckType.FULL_SIZED_TRUCK_PICK_UP:
         writer.writeByte(3);
-        break;
-      case TruckType.class_4:
-        writer.writeByte(4);
-        break;
-      case TruckType.class_5:
-        writer.writeByte(5);
-        break;
-      case TruckType.class_6:
-        writer.writeByte(6);
-        break;
-      case TruckType.class_7:
-        writer.writeByte(7);
-        break;
-      case TruckType.class_8:
-        writer.writeByte(8);
         break;
     }
   }

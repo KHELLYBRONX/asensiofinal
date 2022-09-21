@@ -50,23 +50,23 @@ class PersonalDetailsModel {
   static TruckType? getTruckType(int index) {
     switch (index) {
       case 0:
-        return TruckType.class_1;
+        return TruckType.MINI_TRUCK_PICK_UP;
       case 1:
-        return TruckType.class_2a;
+        return TruckType.MID_SIZED_TRUCK_PICK_UP;
       case 2:
-        return TruckType.class_2b;
+        return TruckType.COMPACT_TRUCK_PICK_UP;
       case 3:
-        return TruckType.class_3;
-      case 4:
-        return TruckType.class_4;
-      case 5:
-        return TruckType.class_5;
-      case 6:
-        return TruckType.class_6;
-      case 7:
-        return TruckType.class_7;
-      case 8:
-        return TruckType.class_8;
+        return TruckType.FULL_SIZED_TRUCK_PICK_UP;
+      // case 4:
+      //   return TruckType.class_4;
+      // case 5:
+      //   return TruckType.class_5;
+      // case 6:
+      //   return TruckType.class_6;
+      // case 7:
+      //   return TruckType.class_7;
+      // case 8:
+      //   return TruckType.class_8;
       default:
         null;
     }

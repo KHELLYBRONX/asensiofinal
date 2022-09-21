@@ -41,18 +41,8 @@ class _cardetailsState extends State<cardetails> {
     numberPlate = TextEditingController(text: '');
     driverLicense = TextEditingController(text: '');
     loading = false;
-    _selectedTruckType = TruckType.class_1;
-    _truckTypes = [
-      TruckType.class_1,
-      TruckType.class_2a,
-      TruckType.class_2b,
-      TruckType.class_3,
-      TruckType.class_4,
-      TruckType.class_5,
-      TruckType.class_6,
-      TruckType.class_7,
-      TruckType.class_8
-    ];
+    _selectedTruckType = TruckType.MINI_TRUCK_PICK_UP;
+    _truckTypes = TruckType.values;
   }
 
   String? validateForm() {

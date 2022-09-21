@@ -28,7 +28,7 @@ class PersonalDetailsModelAdapter extends TypeAdapter<PersonalDetailsModel> {
       fields[7] as String?,
       fields[8] as String?,
       fields[10] as String?,
-      fields[11] as TruckType,
+      fields[11] as TruckType?,
     );
   }
 
